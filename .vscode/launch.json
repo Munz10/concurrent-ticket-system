@@ -3,18 +3,28 @@
     "configurations": [
         {
             "type": "java",
+            "name": "🚀 Run Advanced System (Recommended)",
+            "request": "launch",
+            "mainClass": "TicketPrintingSystemAdvanced",
+            "projectName": "CW",
+            "console": "integratedTerminal",
+            "sourcePaths": ["src/advanced"]
+        },
+        {
+            "type": "java",
+            "name": "📚 Run Basic System",
+            "request": "launch",
+            "mainClass": "TicketPrintingSystem",
+            "projectName": "CW",
+            "console": "integratedTerminal",
+            "sourcePaths": ["src/basic"]
+        },
+        {
+            "type": "java",
             "name": "TicketPrintingSystem",
             "request": "launch",
             "mainClass": "TicketPrintingSystem",
             "projectName": "CW_b522bf24"
-        },
-        {
-            "type": "java",
-            "name": "Run Ticket Printing System",
-            "request": "launch",
-            "mainClass": "TicketPrintingSystem",
-            "projectName": "CW",
-            "console": "integratedTerminal"
         }
     ]
 }
