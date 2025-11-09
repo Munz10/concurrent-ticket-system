@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "TicketPrintingSystem",
+            "request": "launch",
+            "mainClass": "TicketPrintingSystem",
+            "projectName": "CW_b522bf24"
+        },
+        {
+            "type": "java",
+            "name": "Run Ticket Printing System",
+            "request": "launch",
+            "mainClass": "TicketPrintingSystem",
+            "projectName": "CW",
+            "console": "integratedTerminal"
+        }
+    ]
+}
+
