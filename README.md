@@ -1,10 +1,16 @@
 # Concurrent Ticket System
 
-A Java-based concurrent ticket printing system demonstrating advanced multithreading concepts and synchronization mechanisms.
+A Java-based concurrent ticket printing system with **two versions** demonstrating progression from basic to advanced multithreading concepts.
 
 ## 🎯 Overview
 
-This project simulates a ticket printing system where multiple passengers (threads) attempt to print tickets concurrently while technicians (threads) refill resources (paper and toner) as needed. It showcases proper thread synchronization, deadlock prevention, and resource management.
+This project simulates a ticket printing system where multiple passengers (threads) attempt to print tickets concurrently while technicians (threads) refill resources (paper and toner) as needed. 
+
+**📁 Clear Structure:**
+- **📚 `src/basic/`** - Core concurrency concepts (7 files)
+- **🚀 `src/advanced/`** - Production-grade patterns (10 files)
+
+Each version is **completely self-contained** for easy browsing and learning.
 
 ## 🔧 Key Concurrency Concepts
 
@@ -14,16 +20,25 @@ This project simulates a ticket printing system where multiple passengers (threa
 - **Thread Groups**: Organized thread management
 - **Atomic Operations**: Thread-safe global ticket counter using `AtomicInteger`
 
-## 📋 Components
+## 📋 Two Complete Versions
 
-### Core Classes
-- **`TicketPrintingSystem`**: Main entry point, creates and manages all threads
-- **`TicketMachine`**: Shared resource with synchronized printing operations
-- **`Passenger`**: Thread that prints tickets (consumer)
-- **`TicketPaperTechnician`**: Thread that refills paper (producer)
-- **`TicketTonerTechnician`**: Thread that refills toner (producer)
-- **`Ticket`**: Ticket entity with thread-safe numbering
-- **`ServiceTicketMachine`**: Interface defining machine operations and constants
+### 📚 **Basic Version** (`src/basic/`)
+**Perfect for learning core concepts**
+- **`TicketPrintingSystem`**: Simple thread management
+- **`TicketMachine`**: ReentrantLock + Condition variables
+- **`Passenger`**: Basic consumer thread
+- **`TicketPaperTechnician`** & **`TicketTonerTechnician`**: Resource producers
+- **Focus**: Thread synchronization, Producer-Consumer pattern
+
+### 🚀 **Advanced Version** (`src/advanced/`)  
+**Production-grade implementation**
+- **`TicketPrintingSystemAdvanced`**: ExecutorService thread pools
+- **`TicketMachineAdvanced`**: Enhanced with logging
+- **`PassengerAdvanced`**: Priority-based with monitoring
+- **`SimpleLogger`**: Structured logging framework
+- **`TicketSystemMonitor`**: Real-time performance dashboard
+- **`PassengerPriority`**: VIP/Business/Economy classes
+- **Focus**: Thread pools, Monitoring, Professional patterns
 
 ## 🚀 How to Run
 
@@ -31,18 +46,22 @@ This project simulates a ticket printing system where multiple passengers (threa
 - Java JDK 8 or higher
 - VSCode/Cursor with Java Extension Pack (or any Java IDE)
 
-### Running in VSCode/Cursor
-1. Open the project folder
-2. Open `src/TicketPrintingSystem.java`
-3. Click the "Run" button above the `main` method (or press F5)
+### 🎯 Quick Start - VSCode/Cursor
+1. Press `F5` or click "Run"
+2. Choose your version:
+   - **🚀 Run Advanced System (Recommended)** - See production patterns
+   - **📚 Run Basic System** - Learn core concepts
 
-### Running from Terminal
+### 💻 Terminal Commands
 ```bash
-# Compile
-javac -d bin src/*.java
+# Compile both versions
+javac -d bin src/basic/*.java src/advanced/*.java
 
-# Run
+# Run basic version (learning)
 java -cp bin TicketPrintingSystem
+
+# Run advanced version (production features)
+java -cp bin TicketPrintingSystemAdvanced
 ```
 
 ## 📊 Example Output
@@ -90,15 +109,30 @@ This project demonstrates:
 - Toner per Ticket: 5 units
 - Paper per Ticket: 1 sheet
 
+## 📊 Feature Comparison
+
+| Feature | 📚 Basic | 🚀 Advanced |
+|---------|----------|-------------|
+| **Thread Management** | Manual `new Thread()` | ExecutorService pools |
+| **Logging** | `System.out.println()` | Structured SimpleLogger |
+| **Monitoring** | None | Real-time dashboard |
+| **Priorities** | None | VIP/Business/Economy |
+| **Files** | 7 classes | 10 classes |
+| **Learning Focus** | Core concurrency | Production patterns |
+
+## 📚 Documentation
+
+- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Navigation guide and version comparison
+- **[ENHANCEMENTS.md](ENHANCEMENTS.md)** - Deep dive into advanced features  
+- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Complete implementation guide
+
 ## 📝 Future Enhancements
 
-- [ ] Implement priority queue for VIP passengers
-- [ ] Add real-time statistics dashboard
-- [ ] Implement different ticket types with varying resource costs
-- [ ] Add logging framework (SLF4J)
+- [ ] Implement actual priority scheduling with PriorityBlockingQueue
+- [ ] Add different ticket types with varying resource costs
 - [ ] Implement timeout and retry mechanisms
 - [ ] Add unit tests
-- [ ] Create performance monitoring system
+- [ ] JMX integration for monitoring tools
 
 ## 👨‍💻 Author
 
