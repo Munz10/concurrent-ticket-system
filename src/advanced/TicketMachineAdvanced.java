@@ -1,9 +1,10 @@
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Advanced Ticket Machine with logging and better resource management
+ * Advanced Ticket Machine with circuit breaker, timeouts, and dynamic resource costs
  */
 public class TicketMachineAdvanced implements ServiceTicketMachine {
     private int ticketsPrinted = 0;
@@ -16,12 +17,29 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
     private final Condition resourcesLacking = lock.newCondition();
     private final SimpleLogger logger;
     
+    // Advanced features
+    private final CircuitBreaker printingCircuitBreaker;
+    private final OperationTimeout operationTimeout;
+    private final SystemConfiguration config;
+    
     public TicketMachineAdvanced(int paperLevel, int tonerLevel, ThreadGroup passengers) {
         this.tonerLevel = tonerLevel;
         this.paperLevel = paperLevel;
         this.passengers = passengers;
         this.logger = new SimpleLogger("TicketMachine");
+        this.config = SystemConfiguration.getInstance();
+        
+        // Initialize circuit breaker
+        this.printingCircuitBreaker = new CircuitBreaker("Printing", 
+            config.getCircuitBreakerFailureThreshold(), 
+            config.getCircuitBreakerSuccessThreshold(), 
+            config.getCircuitBreakerTimeout());
+            
+        // Initialize timeout handler (5 second timeout, 3 retries)
+        this.operationTimeout = new OperationTimeout(5000, 3, "TicketMachine");
+        
         logger.info("Initialized - Paper: " + paperLevel + ", Toner: " + tonerLevel);
+        logger.info("Circuit breaker enabled with " + config.getCircuitBreakerFailureThreshold() + " failure threshold");
     }
     
     @Override
@@ -61,7 +79,7 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
             }
             int oldLevel = paperLevel;
             paperLevel += SHEETS_PER_PACK;
-            logger.success("Paper refilled: " + oldLevel + " → " + paperLevel + " sheets");
+            logger.success("Paper refilled: " + oldLevel + " to " + paperLevel + " sheets");
             resourcesLacking.signalAll();
         } catch (InterruptedException e) {
             logger.error("Paper refill interrupted: " + e.getMessage());
@@ -74,19 +92,54 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
     @Override
     public void printTicket(Ticket ticket) {
         try {
+            // Use circuit breaker to prevent cascading failures
+            printingCircuitBreaker.execute(() -> {
+                try {
+                    // Use timeout for the operation
+                    operationTimeout.executeWithTimeout(() -> {
+                        printTicketInternal(ticket);
+                    }, "PrintTicket");
+                } catch (TimeoutException e) {
+                    logger.error("Ticket printing timed out: " + e.getMessage());
+                    throw new RuntimeException("Print operation timed out", e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Print operation interrupted", e);
+                }
+            });
+        } catch (CircuitBreaker.CircuitBreakerException e) {
+            logger.error("Circuit breaker blocked ticket printing: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Failed to print ticket: " + e.getMessage());
+            throw new RuntimeException("Ticket printing failed", e);
+        }
+    }
+    
+    private void printTicketInternal(Ticket ticket) {
+        try {
             lock.lock();
-            while (tonerLevel < MINIMUM_TONER_LEVEL || paperLevel < 1) {
-                logger.warning("Insufficient resources - Toner: " + tonerLevel + ", Paper: " + paperLevel);
+            
+            // Get dynamic resource costs based on ticket type
+            TicketType ticketType = ticket.getTicketType();
+            int requiredToner = ticketType.getTonerCost();
+            int requiredPaper = ticketType.getPaperCost();
+            
+            // Wait for sufficient resources
+            while (!ticketType.canPrint(tonerLevel, paperLevel)) {
+                logger.warning(String.format("Insufficient resources for %s - Need: Toner=%d, Paper=%d | Available: Toner=%d, Paper=%d", 
+                    ticketType.getDisplayName(), requiredToner, requiredPaper, tonerLevel, paperLevel));
                 resourcesLacking.await();
             }
             
-            // Print the ticket
-            tonerLevel -= 5;
-            paperLevel--;
+            // Consume resources based on ticket type
+            tonerLevel -= requiredToner;
+            paperLevel -= requiredPaper;
             ticketsPrinted++;
             ticket.setTicketNumber();
             
-            logger.debug("Ticket printed - Resources remaining: Toner=" + tonerLevel + ", Paper=" + paperLevel);
+            logger.success(String.format("Printed %s - Consumed: Toner=%d, Paper=%d | Remaining: Toner=%d, Paper=%d", 
+                ticketType.getDisplayName(), requiredToner, requiredPaper, tonerLevel, paperLevel));
             
             // Signal technicians if resources are getting low
             if (tonerLevel <= MINIMUM_TONER_LEVEL) {
@@ -98,6 +151,7 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
         } catch (InterruptedException e) {
             logger.error("Ticket printing interrupted: " + e.getMessage());
             Thread.currentThread().interrupt();
+            throw new RuntimeException("Print operation interrupted", e);
         } finally {
             lock.unlock();
         }

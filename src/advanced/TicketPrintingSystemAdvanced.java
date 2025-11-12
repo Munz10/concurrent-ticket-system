@@ -4,30 +4,41 @@ import java.util.List;
 
 public class TicketPrintingSystemAdvanced {
     public static void main(String[] args) {
+        // Load configuration
+        SystemConfiguration config = SystemConfiguration.getInstance();
+        config.printConfiguration();
+        
         // Thread groups for monitoring
         ThreadGroup passengers = new ThreadGroup("Passengers");
         
-        // Initialize ticket machine with monitoring
-        TicketMachineAdvanced ticketMachine = new TicketMachineAdvanced(100, 60, passengers);
-        TicketSystemMonitor monitor = new TicketSystemMonitor(ticketMachine);
+        // Initialize ticket machine with configuration
+        TicketMachineAdvanced ticketMachine = new TicketMachineAdvanced(
+            config.getInitialPaperLevel(), 
+            config.getInitialTonerLevel(), 
+            passengers
+        );
+        TicketSystemMonitor monitor = new TicketSystemMonitor();
         
-        // Create ExecutorServices for better thread management
-        ExecutorService passengerExecutor = Executors.newFixedThreadPool(4, 
-            new NamedThreadFactory("Passenger"));
-        ExecutorService technicianExecutor = Executors.newFixedThreadPool(2, 
-            new NamedThreadFactory("Technician"));
-        ExecutorService monitorExecutor = Executors.newSingleThreadScheduledExecutor(
+        // Create ExecutorServices using configuration
+        ExecutorService passengerExecutor = Executors.newFixedThreadPool(
+            config.getPassengerPoolSize(), new NamedThreadFactory("Passenger"));
+        ExecutorService technicianExecutor = Executors.newFixedThreadPool(
+            config.getTechnicianPoolSize(), new NamedThreadFactory("Technician"));
+        ScheduledExecutorService monitorExecutor = Executors.newScheduledThreadPool(1,
             new NamedThreadFactory("Monitor"));
         
-        // Start monitoring
-        ((ScheduledExecutorService) Executors.newScheduledThreadPool(1)).scheduleAtFixedRate(
-            monitor::printStatistics, 5, 5, TimeUnit.SECONDS);
+        // Start monitoring with configurable interval
+        monitorExecutor.scheduleAtFixedRate(
+            monitor::printStatistics, 
+            config.getMonitoringInterval() / 1000, 
+            config.getMonitoringInterval() / 1000, 
+            TimeUnit.SECONDS);
         
-        // Create tickets with different priorities
-        Ticket ticket1 = new Ticket(100.00);
-        Ticket ticket2 = new Ticket(200.00);
-        Ticket ticket3 = new Ticket(300.00);
-        Ticket ticket4 = new Ticket(400.00);
+        // Create advanced tickets with different types and priorities
+        Ticket ticket1 = new Ticket(TicketType.ECONOMY, PassengerPriority.ECONOMY);
+        Ticket ticket2 = new Ticket(TicketType.BUSINESS, PassengerPriority.BUSINESS);
+        Ticket ticket3 = new Ticket(TicketType.FIRST_CLASS, PassengerPriority.VIP);
+        Ticket ticket4 = new Ticket(TicketType.VIP_PREMIUM, PassengerPriority.VIP);
         
         // Create passengers with different priorities (1=VIP, 2=Business, 3=Economy)
         PassengerAdvanced passenger1 = new PassengerAdvanced("Passenger-Economy-1", ticketMachine, ticket1, 3, PassengerPriority.ECONOMY, monitor);
@@ -52,6 +63,7 @@ public class TicketPrintingSystemAdvanced {
         // Shutdown executors gracefully
         passengerExecutor.shutdown();
         technicianExecutor.shutdown();
+        monitorExecutor.shutdown();
         
         try {
             // Wait for all passengers to complete (max 2 minutes)
@@ -76,7 +88,13 @@ public class TicketPrintingSystemAdvanced {
             System.err.println("[ERROR] Main thread interrupted");
             passengerExecutor.shutdownNow();
             technicianExecutor.shutdownNow();
+            monitorExecutor.shutdownNow();
             Thread.currentThread().interrupt();
+        } finally {
+            // Ensure all executors are shutdown
+            if (!monitorExecutor.isShutdown()) {
+                monitorExecutor.shutdownNow();
+            }
         }
     }
 }

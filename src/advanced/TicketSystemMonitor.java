@@ -1,4 +1,3 @@
-import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.time.Duration;
 import java.time.Instant;
@@ -8,8 +7,6 @@ import java.time.Instant;
  * Tracks performance metrics and system health
  */
 public class TicketSystemMonitor {
-    private final TicketMachineAdvanced ticketMachine;
-    
     // Performance metrics
     private final AtomicInteger totalTicketsPrinted = new AtomicInteger(0);
     private final AtomicLong totalWaitTimeMs = new AtomicLong(0);
@@ -28,8 +25,7 @@ public class TicketSystemMonitor {
     // System start time
     private final Instant startTime;
     
-    public TicketSystemMonitor(TicketMachineAdvanced ticketMachine) {
-        this.ticketMachine = ticketMachine;
+    public TicketSystemMonitor() {
         this.startTime = Instant.now();
     }
     
