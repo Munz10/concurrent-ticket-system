@@ -46,8 +46,8 @@ public class SimpleLogger {
         if (level.getPriority() >= currentLevel.getPriority()) {
             String timestamp = LocalTime.now().format(TIME_FORMATTER);
             String threadName = Thread.currentThread().getName();
-            System.out.printf("[%s] %s [%s] <%s> %s%n", 
-                timestamp, level.getIcon(), level.name(), context, message);
+            System.out.printf("[%s] %s [%s] [%s] <%s> %s%n", 
+                timestamp, level.getIcon(), level.name(), threadName, context, message);
         }
     }
     
