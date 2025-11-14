@@ -29,11 +29,21 @@ public enum TicketType {
      * Calculate final ticket price with passenger priority multiplier
      */
     public double calculatePrice(PassengerPriority passengerPriority) {
-        double multiplier = switch (passengerPriority) {
-            case VIP -> 1.5;        // VIP gets 50% premium service
-            case BUSINESS -> 1.2;   // Business gets 20% premium
-            case ECONOMY -> 1.0;    // Standard pricing
-        };
+        double multiplier;
+        switch (passengerPriority) {
+            case VIP:
+                multiplier = 1.5;        // VIP gets 50% premium service
+                break;
+            case BUSINESS:
+                multiplier = 1.2;   // Business gets 20% premium
+                break;
+            case ECONOMY:
+                multiplier = 1.0;    // Standard pricing
+                break;
+            default:
+                multiplier = 1.0;    // Default to standard pricing
+                break;
+        }
         return basePrice * multiplier;
     }
     
