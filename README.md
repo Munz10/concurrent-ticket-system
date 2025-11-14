@@ -160,7 +160,6 @@ Ticket No : 0001 , Ticket Price : 100.0
 ## 📚 Documentation
 
 - **[FEATURES_GUIDE.md](FEATURES_GUIDE.md)** - **📖 Complete features guide** - Why each feature exists, implementation details, and production benefits
-- **[ADVANCED_FEATURES_SUMMARY.md](ADVANCED_FEATURES_SUMMARY.md)** - Quick overview of advanced capabilities
 - **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Navigation guide and architecture comparison
 
 ## 📝 Future Enhancements
@@ -183,40 +182,9 @@ Ticket No : 0001 , Ticket Price : 100.0
 - [ ] Metrics export to Prometheus/Grafana
 - [ ] Docker containerization with health checks
 
-## 👨‍💻 Author
-
-**Munaza** - *Software Engineering Student*
-
-- 🎓 Developed as part of advanced concurrent programming coursework
-- 🚀 Enhanced with production-grade enterprise patterns
-- 💼 Demonstrates real-world software engineering skills
-- 📧 Contact: [Your Email] | 🔗 GitHub: [@Munz10](https://github.com/Munz10)
-
-*This project showcases the evolution from academic learning to professional software development practices.*
-
 ## 📄 License
 
-**MIT License**
-
-Copyright (c) 2024 Munaza
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
