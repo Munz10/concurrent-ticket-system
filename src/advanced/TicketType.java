@@ -1,3 +1,5 @@
+package advanced;
+
 /**
  * Different ticket types with varying resource costs
  * Demonstrates advanced resource management

@@ -1,9 +1,13 @@
+package basic;
+
 public class TicketPrintingSystem {
     public static void main(String[] args) {
         ThreadGroup passengers = new ThreadGroup("Passengers");
         ThreadGroup technicians = new ThreadGroup("Technicians");
-//        TicketMachine ticketMachine = new TicketMachine(ServiceTicketMachine.FULL_PAPER_TRAY, ServiceTicketMachine.FULL_TONER_LEVEL);
-        TicketMachine ticketMachine = new TicketMachine(100,60, passengers);
+        // TicketMachine ticketMachine = new
+        // TicketMachine(ServiceTicketMachine.FULL_PAPER_TRAY,
+        // ServiceTicketMachine.FULL_TONER_LEVEL);
+        TicketMachine ticketMachine = new TicketMachine(100, 60, passengers);
 
         Ticket ticket1 = new Ticket(100.00);
         Ticket ticket2 = new Ticket(200.00);

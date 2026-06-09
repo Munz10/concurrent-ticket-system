@@ -1,3 +1,5 @@
+package basic;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Ticket {
@@ -5,7 +7,7 @@ public class Ticket {
     private int ticketNumber = 0;
     private final double ticketPrice;
 
-    public Ticket( Double ticketPrice){
+    public Ticket(Double ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 
@@ -15,7 +17,7 @@ public class Ticket {
 
     public String getTicketNumber() {
         int ticketNum = ticketNumber;
-        String padded = String.format("%04d" , ticketNum);
+        String padded = String.format("%04d", ticketNum);
         return padded;
     }
 

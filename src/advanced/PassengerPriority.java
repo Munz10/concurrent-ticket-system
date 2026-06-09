@@ -1,3 +1,5 @@
+package advanced;
+
 /**
  * Passenger priority levels for queue management
  * Lower numeric value = Higher priority

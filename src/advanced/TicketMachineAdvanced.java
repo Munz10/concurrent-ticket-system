@@ -1,10 +1,13 @@
+package advanced;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Advanced Ticket Machine with circuit breaker, timeouts, and dynamic resource costs
+ * Advanced Ticket Machine with circuit breaker, timeouts, and dynamic resource
+ * costs
  */
 public class TicketMachineAdvanced implements ServiceTicketMachine {
     private int ticketsPrinted = 0;
@@ -16,32 +19,33 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
     private final Condition refillPaper = lock.newCondition();
     private final Condition resourcesLacking = lock.newCondition();
     private final SimpleLogger logger;
-    
+
     // Advanced features
     private final CircuitBreaker printingCircuitBreaker;
     private final OperationTimeout operationTimeout;
     private final SystemConfiguration config;
-    
+
     public TicketMachineAdvanced(int paperLevel, int tonerLevel, ThreadGroup passengers) {
         this.tonerLevel = tonerLevel;
         this.paperLevel = paperLevel;
         this.passengers = passengers;
         this.logger = new SimpleLogger("TicketMachine");
         this.config = SystemConfiguration.getInstance();
-        
+
         // Initialize circuit breaker
-        this.printingCircuitBreaker = new CircuitBreaker("Printing", 
-            config.getCircuitBreakerFailureThreshold(), 
-            config.getCircuitBreakerSuccessThreshold(), 
-            config.getCircuitBreakerTimeout());
-            
+        this.printingCircuitBreaker = new CircuitBreaker("Printing",
+                config.getCircuitBreakerFailureThreshold(),
+                config.getCircuitBreakerSuccessThreshold(),
+                config.getCircuitBreakerTimeout());
+
         // Initialize timeout handler (5 second timeout, 3 retries)
         this.operationTimeout = new OperationTimeout(5000, 3, "TicketMachine");
-        
+
         logger.info("Initialized - Paper: " + paperLevel + ", Toner: " + tonerLevel);
-        logger.info("Circuit breaker enabled with " + config.getCircuitBreakerFailureThreshold() + " failure threshold");
+        logger.info(
+                "Circuit breaker enabled with " + config.getCircuitBreakerFailureThreshold() + " failure threshold");
     }
-    
+
     @Override
     public void refillToner() {
         try {
@@ -68,7 +72,7 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
             lock.unlock();
         }
     }
-    
+
     @Override
     public void refillPaper() {
         try {
@@ -88,7 +92,7 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
             lock.unlock();
         }
     }
-    
+
     @Override
     public void printTicket(Ticket ticket) {
         try {
@@ -115,32 +119,33 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
             throw new RuntimeException("Ticket printing failed", e);
         }
     }
-    
+
     private void printTicketInternal(Ticket ticket) {
         try {
             lock.lock();
-            
+
             // Get dynamic resource costs based on ticket type
             TicketType ticketType = ticket.getTicketType();
             int requiredToner = ticketType.getTonerCost();
             int requiredPaper = ticketType.getPaperCost();
-            
+
             // Wait for sufficient resources
             while (!ticketType.canPrint(tonerLevel, paperLevel)) {
-                logger.warning(String.format("Insufficient resources for %s - Need: Toner=%d, Paper=%d | Available: Toner=%d, Paper=%d", 
-                    ticketType.getDisplayName(), requiredToner, requiredPaper, tonerLevel, paperLevel));
+                logger.warning(String.format(
+                        "Insufficient resources for %s - Need: Toner=%d, Paper=%d | Available: Toner=%d, Paper=%d",
+                        ticketType.getDisplayName(), requiredToner, requiredPaper, tonerLevel, paperLevel));
                 resourcesLacking.await();
             }
-            
+
             // Consume resources based on ticket type
             tonerLevel -= requiredToner;
             paperLevel -= requiredPaper;
             ticketsPrinted++;
             ticket.setTicketNumber();
-            
-            logger.success(String.format("Printed %s - Consumed: Toner=%d, Paper=%d | Remaining: Toner=%d, Paper=%d", 
-                ticketType.getDisplayName(), requiredToner, requiredPaper, tonerLevel, paperLevel));
-            
+
+            logger.success(String.format("Printed %s - Consumed: Toner=%d, Paper=%d | Remaining: Toner=%d, Paper=%d",
+                    ticketType.getDisplayName(), requiredToner, requiredPaper, tonerLevel, paperLevel));
+
             // Signal technicians if resources are getting low
             if (tonerLevel <= MINIMUM_TONER_LEVEL) {
                 refillToner.signalAll();
@@ -156,19 +161,19 @@ public class TicketMachineAdvanced implements ServiceTicketMachine {
             lock.unlock();
         }
     }
-    
+
     public int getTonerLevel() {
         return tonerLevel;
     }
-    
+
     public int getPaperLevel() {
         return paperLevel;
     }
-    
+
     public int getTicketsPrinted() {
         return ticketsPrinted;
     }
-    
+
     @Override
     public String toString() {
         return "\n*** TICKET MACHINE FINAL STATUS ***\n" +

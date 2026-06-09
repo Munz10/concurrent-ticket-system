@@ -5,38 +5,31 @@
             "type": "java",
             "name": "TicketPrintingSystemAdvanced",
             "request": "launch",
-            "mainClass": "TicketPrintingSystemAdvanced",
-            "projectName": "CW_b522bf24"
+            "mainClass": "advanced.TicketPrintingSystemAdvanced",
+            "projectName": "concurrent-ticket-system"
         },
         {
             "type": "java",
             "name": "🚀 Run Advanced System (Recommended)",
             "request": "launch",
-            "mainClass": "TicketPrintingSystemAdvanced",
-            "projectName": "CW",
-            "console": "integratedTerminal",
-            "sourcePaths": [
-                "src/advanced"
-            ]
+            "mainClass": "advanced.TicketPrintingSystemAdvanced",
+            "projectName": "concurrent-ticket-system",
+            "console": "integratedTerminal"
         },
         {
             "type": "java",
             "name": "📚 Run Basic System",
             "request": "launch",
-            "mainClass": "TicketPrintingSystem",
-            "projectName": "CW",
-            "console": "integratedTerminal",
-            "sourcePaths": [
-                "src/basic"
-            ]
+            "mainClass": "basic.TicketPrintingSystem",
+            "projectName": "concurrent-ticket-system",
+            "console": "integratedTerminal"
         },
         {
             "type": "java",
             "name": "TicketPrintingSystem",
             "request": "launch",
-            "mainClass": "TicketPrintingSystem",
-            "projectName": "CW_b522bf24"
+            "mainClass": "basic.TicketPrintingSystem",
+            "projectName": "concurrent-ticket-system"
         }
     ]
 }
-

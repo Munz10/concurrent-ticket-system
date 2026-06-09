@@ -1,3 +1,5 @@
+package advanced;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Ticket {
@@ -13,7 +15,7 @@ public class Ticket {
         this.ticketType = TicketType.ECONOMY; // Default to economy
         this.passengerPriority = PassengerPriority.ECONOMY; // Default priority
     }
-    
+
     // Constructor for advanced tickets with type and priority
     public Ticket(TicketType ticketType, PassengerPriority passengerPriority) {
         this.ticketType = ticketType;
@@ -27,17 +29,22 @@ public class Ticket {
 
     public String getTicketNumber() {
         int ticketNum = ticketNumber;
-        String padded = String.format("%04d" , ticketNum);
+        String padded = String.format("%04d", ticketNum);
         return padded;
     }
 
-    public TicketType getTicketType() { return ticketType; }
-    public PassengerPriority getPassengerPriority() { return passengerPriority; }
-    
+    public TicketType getTicketType() {
+        return ticketType;
+    }
+
+    public PassengerPriority getPassengerPriority() {
+        return passengerPriority;
+    }
+
     public String toString() {
-        return "Ticket No: " + getTicketNumber() + 
-               " | Type: " + ticketType.getDisplayName() + 
-               " | Priority: " + passengerPriority + 
-               " | Price: $" + String.format("%.2f", ticketPrice);
+        return "Ticket No: " + getTicketNumber() +
+                " | Type: " + ticketType.getDisplayName() +
+                " | Priority: " + passengerPriority +
+                " | Price: $" + String.format("%.2f", ticketPrice);
     }
 }

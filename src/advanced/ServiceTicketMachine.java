@@ -1,3 +1,5 @@
+package advanced;
+
 public interface ServiceTicketMachine {
 
     int FULL_PAPER_TRAY = 250;
